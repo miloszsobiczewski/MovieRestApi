@@ -5,4 +5,10 @@ from .serializers import MovieSerializer, CommentSerializer
 
 
 class MovieView(viewsets.ModelViewSet):
-    
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+
+class CommentView(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
