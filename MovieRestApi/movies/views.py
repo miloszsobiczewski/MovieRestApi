@@ -1,12 +1,10 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Movie, Comment
 from .serializers import MovieSerializer, CommentSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 import pdb
-from django.db.models import Avg, Count, Min, Sum, Max
-import datetime
+from django.db.models import Count
 from .utils import get_date
 
 
@@ -24,10 +22,6 @@ class CommentView(viewsets.ModelViewSet):
         date_from = get_date(request.GET['date_from'])
         date_to = get_date(request.GET['date_to'])
 
-        # get movies from range
-        # top_movies = self.get_queryset().filter(
-        #     date__range=(date_from, date_to))
-        # aggregate to get No. of comments
         cmnt = Comment.objects.filter(
             date__range=(date_from, date_to)).values('movie_id').annotate(
             total_comments=Count('comment_txt')).order_by('-total_comments')
@@ -39,7 +33,4 @@ class CommentView(viewsets.ModelViewSet):
         
         # top = self.get_queryset().order_by('id').last()
         # serializer = self.get_serializer_class()(cmnt)
-
-        # pdb.set_trace()
-
         return Response(cmnt)
