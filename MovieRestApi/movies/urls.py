@@ -8,5 +8,5 @@ router.register('movies', views.MovieView)
 router.register('comments', views.CommentView)
 
 urlpatterns = [
-    path('', include(routers.urls))
+    path('', include(router.urls))
 ]
