@@ -30,16 +30,16 @@ class CommentView(viewsets.ModelViewSet):
         # aggregate to get No. of comments
         cmnt = Comment.objects.filter(
             date__range=(date_from, date_to)).values('movie_id').annotate(
-            cnt=Count('comment_txt')).order_by('-cnt')
+            total_comments=Count('comment_txt')).order_by('-total_comments')
 
         # add rank
-        max_cnt = cmnt[0]['cnt']
+        max_cnt = cmnt[0]['total_comments']
         for i in range(0, len(cmnt)):
-            cmnt[i]['rnk'] = max_cnt - cmnt[i]['cnt'] + 1 
+            cmnt[i]['rank'] = max_cnt - cmnt[i]['total_comments'] + 1
         
         # top = self.get_queryset().order_by('id').last()
-        serializer = self.get_serializer_class()(cmnt)
+        # serializer = self.get_serializer_class()(cmnt)
 
-        pdb.set_trace()
+        # pdb.set_trace()
 
-        return Response(serializer.data)
+        return Response(cmnt)
