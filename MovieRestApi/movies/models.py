@@ -15,4 +15,4 @@ class Comment(models.Model):
     date = models.DateField(auto_now=True, blank=False)
 
     def __str__(self):
-        return self.movie_id
+        return str(self.movie_id)
