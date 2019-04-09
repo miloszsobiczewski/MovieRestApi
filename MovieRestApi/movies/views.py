@@ -25,8 +25,19 @@ class MovieView(viewsets.ModelViewSet):
 
 
 class CommentView(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
+    # queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Comment.objects.all()
+        movie_id = self.request.query_params.get('movie_id', None)
+        if movie_id is not None:
+            queryset = queryset.filter(movie_id=movie_id)
+        return queryset
 
     @action(methods=['GET'], detail=False)
     def top(self, request):
@@ -38,7 +49,6 @@ class CommentView(viewsets.ModelViewSet):
             total_comments=Count('comment_txt')).order_by('-total_comments')
 
         # add rank
-
         total_comments = [c['total_comments'] for c in cmnt]
         ranked_comments = list(Ranking(total_comments))
         for i in range(0, len(cmnt)):
