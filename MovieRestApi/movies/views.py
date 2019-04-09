@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.db.models import Count
 from .utils import get_date
 from ranking import Ranking, DENSE
-import pdb
+
 
 class MovieView(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
@@ -58,7 +58,6 @@ class TopView(viewsets.ModelViewSet):
         ranked_comments = list(Ranking(total_comments, strategy=DENSE))
         for i in range(0, len(cmnt)):
             cmnt[i]['rank'] = ranked_comments[i][0] + 1
-        pdb.set_trace()
         return Response(cmnt)
 
 
