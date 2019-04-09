@@ -12,21 +12,19 @@ class MovieView(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #
-    #     write_serializer = MovieSerializer(data=request.data)
-    #     write_serializer.is_valid(raise_exception=True)
-    #     print(write_serializer.is_valid(raise_exception=True))
-    #
-    #     pdb.set_trace()
-    #
-    #     self.perform_create(write_serializer)
-    #
-    #     res = write_serializer.data
-    #     movie = Movie.objects.all().filter(id=res['id'])
-    #     res.update(movie.values('omdb_details')[0])
-    #
-    #     return Response(res)
+    def create(self, request, *args, **kwargs):
+
+        write_serializer = MovieSerializer(data=request.data)
+        write_serializer.is_valid(raise_exception=True)
+        print(write_serializer.is_valid(raise_exception=True))
+
+        self.perform_create(write_serializer)
+
+        res = write_serializer.data
+        movie = Movie.objects.all().filter(id=res['id'])
+        res.update(movie.values('omdb_details')[0])
+
+        return Response(res)
 
 
 class CommentView(viewsets.ModelViewSet):
