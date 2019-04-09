@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Movie, Comment
 import requests as r
+from rest_framework.validators import UniqueValidator
 import pdb
 
 
@@ -11,10 +12,7 @@ class MovieSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        # custom validation
-
         instance = Movie.objects.create(**validated_data)
-
         movie_title = instance.movie_title
 
         # get external movie data from OMDb API
