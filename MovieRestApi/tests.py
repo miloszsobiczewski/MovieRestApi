@@ -1,8 +1,6 @@
-import os
 import unittest
 import movies.utils as ut
 import datetime
-import pdb
 import requests as r
 
 
@@ -11,7 +9,6 @@ class MovieRestApiUnitTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
 
-        # self.good_url = 'http://msobiczewski.pythonanywhere.com/'
         self.correct_movie_title = 'Django'
         self.incorrect_movie_title = 'Humbeleulagula'
         self.movies_url = 'http://0.0.0.0:8000/movies/'
@@ -51,7 +48,6 @@ class MovieRestApiUnitTests(unittest.TestCase):
 
         # POST movie
         response = r.post(self.movies_url, data=parameters)
-        print(response.status_code, response.reason)
         post = response.json()
 
         movie_id = post['id']
@@ -59,25 +55,22 @@ class MovieRestApiUnitTests(unittest.TestCase):
 
         # GET movie
         response = r.get(url, data={"id": movie_id})
-        print(response.status_code, response.reason)
         get = response.json()
-        pdb.set_trace()
         self.assertEqual(post['movie_title'], get['movie_title'])
 
         # DELETE movie
         response = r.delete(url, data={"id": movie_id})
-        print(response.status_code, response.reason)
 
     def test_004_post_comment(self):
         """
-
+        Post new movie, Post new comment, retrieve from api, compare and delete
+        movie with comments
         :return:
         """
         movie_parameters = {"movie_title": self.correct_movie_title}
 
         # POST movie
         response = r.post(self.movies_url, data=movie_parameters)
-        print(response.status_code, response.reason)
         post = response.json()
 
         movie_id = post['id']
@@ -88,7 +81,6 @@ class MovieRestApiUnitTests(unittest.TestCase):
 
         # POST comment
         response = r.post(self.comments_url, data=comment_parameters)
-        print(response.status_code, response.reason)
         post = response.json()
 
         comment_id = post['id']
@@ -96,14 +88,12 @@ class MovieRestApiUnitTests(unittest.TestCase):
 
         # GET comment
         response = r.get(comment_url, data={"id": comment_id})
-        print(response.status_code, response.reason)
         get = response.json()
 
         self.assertEqual(post['comment_txt'], get['comment_txt'])
 
         # DELETE movie, DELETE comment cascade
         response = r.delete(movie_url, data={"id": movie_id})
-        print(response.status_code, response.reason)
 
     @classmethod
     def tearDownClass(self):
