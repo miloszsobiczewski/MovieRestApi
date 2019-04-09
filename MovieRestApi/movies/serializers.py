@@ -3,6 +3,7 @@ from .models import Movie, Comment
 import requests as r
 from rest_framework.validators import UniqueValidator
 import pdb
+import json
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -15,10 +16,12 @@ class MovieSerializer(serializers.ModelSerializer):
         instance = Movie.objects.create(**validated_data)
         movie_title = instance.movie_title
 
+        # read config data
+        with open("movies/config.JSON") as config_file:
+            conf = json.load(config_file)
+
         # get external movie data from OMDb API
-        # add configuration file... maybe
-        api_key = '120e2295'
-        url = 'http://www.omdbapi.com/?t=%s&apikey=%s' % (movie_title, api_key)
+        url = conf['api_url'] % (movie_title, conf['api_key'])
         print(url)
 
         # check for response code

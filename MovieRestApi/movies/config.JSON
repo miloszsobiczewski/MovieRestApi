@@ -1,0 +1,4 @@
+{
+  "api_url": "http://www.omdbapi.com/?t=%s&apikey=%s",
+  "api_key": "120e2295"
+}
