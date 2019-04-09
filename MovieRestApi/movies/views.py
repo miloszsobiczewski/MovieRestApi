@@ -6,11 +6,22 @@ from rest_framework.response import Response
 import pdb
 from django.db.models import Count
 from .utils import get_date
+from ranking import Ranking
 
 
 class MovieView(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+
+    # def create(self, request, *args, **kwargs):
+    #     write_serializer = MovieSerializer(data=request.data)
+    #     write_serializer.is_valid(raise_exception=True)
+    #     # instance = self.perform_create(write_serializer)
+    #
+    #     instance = self.queryset.filter(movie_title=write_serializer.data['movie_title'])
+    #     read_serializer = MovieSerializer(instance)
+    #     pdb.set_trace()
+    #     return Response(read_serializer.data)
 
 
 class CommentView(viewsets.ModelViewSet):
@@ -27,10 +38,12 @@ class CommentView(viewsets.ModelViewSet):
             total_comments=Count('comment_txt')).order_by('-total_comments')
 
         # add rank
-        max_cnt = cmnt[0]['total_comments']
+
+        total_comments = [c['total_comments'] for c in cmnt]
+        ranked_comments = list(Ranking(total_comments))
         for i in range(0, len(cmnt)):
-            cmnt[i]['rank'] = max_cnt - cmnt[i]['total_comments'] + 1
-        
+            cmnt[i]['rank'] = ranked_comments[i][0] + 1
+
         # top = self.get_queryset().order_by('id').last()
         # serializer = self.get_serializer_class()(cmnt)
         return Response(cmnt)
