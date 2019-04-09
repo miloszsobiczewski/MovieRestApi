@@ -4,45 +4,66 @@ import requests as r
 import json
 import pdb
 
+
+def validate_movie_existence(value):
+    movie_title = value
+
+    # read config data
+    with open("movies/config.JSON") as config_file:
+        conf = json.load(config_file)
+
+    # get external movie data from OMDb API
+    url = conf['api_url'] % (movie_title, conf['api_key'])
+    print(url)
+
+    # check for response code
+    response = r.get(url)
+    data = response.json()
+    print(data)
+    if data['Response'] == 'False':
+        print('==> Not OK')
+        # pdb.set_trace()
+        raise serializers.ValidationError(
+            "This movie doesn\'t exist in OMDb")
+    return value
+
+
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ('id', 'movie_title')
+        validators = [
+            validate_movie_existence
+        ]
 
-    def create(self, validated_data):
-
-        instance = Movie.objects.create(**validated_data)
-        movie_title = instance.movie_title
-
-        # read config data
-        with open("movies/config.JSON") as config_file:
-            conf = json.load(config_file)
-
-        # get external movie data from OMDb API
-        url = conf['api_url'] % (movie_title, conf['api_key'])
-        print(url)
-
-        # check for response code
-        response = r.get(url)
-        if response.status_code == '200':
-            print('OK')
-        else:
-            print('Not OK')
-
-        data = response.json()
-        print(data)
-
-        pdb.set_trace()
-        instance.omdb_details = data
-        instance.save()
-
-        return instance
-
-
-class MovieSerializerOutput(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = ('id', 'movie_title', 'omdb_details')
+    # def create(self, validated_data):
+    #
+    #     instance = Movie.objects.create(**validated_data)
+    #     movie_title = instance.movie_title
+    #
+    #     # read config data
+    #     with open("movies/config.JSON") as config_file:
+    #         conf = json.load(config_file)
+    #
+    #     # get external movie data from OMDb API
+    #     url = conf['api_url'] % (movie_title, conf['api_key'])
+    #     print(url)
+    #
+    #     # check for response code
+    #     response = r.get(url)
+    #     if response.status_code == '200':
+    #         print('OK')
+    #         data = response.json()
+    #         print(data)
+    #         instance.omdb_details = data
+    #     else:
+    #         print('Not OK')
+    #         raise serializers.ValidationError(
+    #             "This movie doesn\'t exist in OMDb")
+    #
+    #     instance.save()
+    #     pdb.set_trace()
+    #     return instance
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -50,3 +71,8 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('id', 'movie_id', 'comment_txt', 'date')
 
+
+class TopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'movie_id', 'comment_txt', 'date')
