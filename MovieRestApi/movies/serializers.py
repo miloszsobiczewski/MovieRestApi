@@ -1,24 +1,13 @@
 from rest_framework import serializers
 from .models import Movie, Comment
-import requests as r
-import json
-import pdb
+from . import utils as ut
 
 
 def validate_movie_existence(value):
+
     movie_title = value['movie_title']
+    data = ut.get_omdb_data(movie_title)
 
-    # read config data
-    with open("movies/config.JSON") as config_file:
-        conf = json.load(config_file)
-
-    # get external movie data from OMDb API
-    url = conf['api_url'] % (movie_title, conf['api_key'])
-    print(url)
-    # check response code
-    response = r.get(url)
-    data = response.json()
-    print(data)
     if data['Response'] == 'False':
         raise serializers.ValidationError(
             "This movie doesn\'t exist in OMDb")
@@ -38,14 +27,8 @@ class MovieSerializer(serializers.ModelSerializer):
         instance = Movie.objects.create(**validated_data)
         movie_title = instance.movie_title
 
-        # read config data
-        with open("movies/config.JSON") as config_file:
-            conf = json.load(config_file)
+        data = ut.get_omdb_data(movie_title)
 
-        # get external movie data from OMDb API
-        url = conf['api_url'] % (movie_title, conf['api_key'])
-        response = r.get(url)
-        data = response.json()
         instance.omdb_details = data
         instance.save()
 
@@ -62,3 +45,4 @@ class TopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'movie_id', 'comment_txt', 'date')
+

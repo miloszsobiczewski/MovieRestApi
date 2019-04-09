@@ -2,7 +2,6 @@ from rest_framework import viewsets
 from .models import Movie, Comment
 from .serializers import MovieSerializer, CommentSerializer, TopSerializer
 from rest_framework.response import Response
-import pdb
 from django.db.models import Count
 from .utils import get_date
 from ranking import Ranking
