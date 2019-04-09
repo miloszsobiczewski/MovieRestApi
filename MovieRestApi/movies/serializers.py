@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from .models import Movie, Comment
 import requests as r
-from rest_framework.validators import UniqueValidator
-import pdb
 import json
-
+import pdb
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,12 +31,18 @@ class MovieSerializer(serializers.ModelSerializer):
 
         data = response.json()
         print(data)
-        # pdb.set_trace()
 
+        pdb.set_trace()
         instance.omdb_details = data
         instance.save()
 
         return instance
+
+
+class MovieSerializerOutput(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ('id', 'movie_title', 'omdb_details')
 
 
 class CommentSerializer(serializers.ModelSerializer):

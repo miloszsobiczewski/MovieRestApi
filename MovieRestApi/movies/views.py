@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from .models import Movie, Comment
-from .serializers import MovieSerializer, CommentSerializer
+from .serializers import MovieSerializer, MovieSerializerOutput
+from .serializers import CommentSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 import pdb
@@ -13,15 +14,16 @@ class MovieView(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     write_serializer = MovieSerializer(data=request.data)
-    #     write_serializer.is_valid(raise_exception=True)
-    #     # instance = self.perform_create(write_serializer)
-    #
-    #     instance = self.queryset.filter(movie_title=write_serializer.data['movie_title'])
-    #     read_serializer = MovieSerializer(instance)
-    #     pdb.set_trace()
-    #     return Response(read_serializer.data)
+    def create(self, request, *args, **kwargs):
+        write_serializer = MovieSerializer(data=request.data)
+        write_serializer.is_valid(raise_exception=True)
+        self.perform_create(write_serializer)
+
+        res = write_serializer.data
+        movie = Movie.objects.all().filter(id=res['id'])
+        res.update(movie.values('omdb_details')[0])
+
+        return Response(res)
 
 
 class CommentView(viewsets.ModelViewSet):
