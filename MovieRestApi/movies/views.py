@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from .models import Movie, Comment
 from .serializers import MovieSerializer, CommentSerializer, TopSerializer
 from rest_framework.response import Response
-from django.db.models import Count
+from django.db.models import Count, Q
 from .utils import get_date
 from ranking import Ranking, DENSE
 import datetime
@@ -57,15 +57,17 @@ class TopView(viewsets.ModelViewSet):
         except:
             date_to = datetime.date.today()
 
-        cmnt = Comment.objects.filter(
-            date__range=(date_from, date_to)).values('movie_id').annotate(
-            total_comments=Count('comment_txt')).order_by('-total_comments')
+        cmnt = Movie.objects.filter(
+            Q(comment__date__range=(date_from, date_to)) |
+            Q(comment__date__isnull=True)).values("id").annotate(
+            total_comments=Count("comment")).order_by('-total_comments')
 
         # add rank
         total_comments = [c['total_comments'] for c in cmnt]
         ranked_comments = list(Ranking(total_comments, strategy=DENSE))
         for i in range(0, len(cmnt)):
             cmnt[i]['rank'] = ranked_comments[i][0] + 1
+
         return Response(cmnt)
 
 

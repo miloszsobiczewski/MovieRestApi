@@ -10,7 +10,7 @@ class Movie(models.Model):
 
 
 class Comment(models.Model):
-    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True)
     comment_txt = models.TextField()
     date = models.DateField(auto_now=True, blank=False)
 

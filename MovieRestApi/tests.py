@@ -95,6 +95,31 @@ class MovieRestApiUnitTests(unittest.TestCase):
         # DELETE movie, DELETE comment cascade
         response = r.delete(movie_url, data={"id": movie_id})
 
+    def test_004_get_top(self):
+        """
+        Post new movies and comments, Check if returned list is appropriate
+        :return:
+        """
+        movie_parameters = {"movie_title": self.correct_movie_title}
+
+        # POST movies
+        response = r.post(self.movies_url, data=movie_parameters)
+        post = response.json()
+
+        movie_id = post['id']
+        movie_url = self.movies_url + str(movie_id) + '/'
+
+        comment_parameters = {"movie_id": movie_id,
+                              "comment_txt": self.test_comment}
+
+        # POST comments
+        response = r.post(self.comments_url, data=comment_parameters)
+        post = response.json()
+
+        # DELETE movie, DELETE comment cascade
+        response = r.delete(movie_url, data={"id": movie_id})
+
+
     @classmethod
     def tearDownClass(self):
         """
