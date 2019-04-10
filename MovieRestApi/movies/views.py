@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from django.db.models import Count
 from .utils import get_date
 from ranking import Ranking, DENSE
+import datetime
+import pdb
 
 
 class MovieView(viewsets.ModelViewSet):
@@ -46,8 +48,14 @@ class TopView(viewsets.ModelViewSet):
     serializer_class = TopSerializer
 
     def list(self, request):
-        date_from = get_date(request.GET['date_from'])
-        date_to = get_date(request.GET['date_to'])
+        try:
+            date_from = get_date(request.GET['date_from'])
+        except:
+            date_from = datetime.date(1, 1, 1)
+        try:
+            date_to = get_date(request.GET['date_to'])
+        except:
+            date_to = datetime.date.today()
 
         cmnt = Comment.objects.filter(
             date__range=(date_from, date_to)).values('movie_id').annotate(

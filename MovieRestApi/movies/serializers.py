@@ -44,5 +44,5 @@ class CommentSerializer(serializers.ModelSerializer):
 class TopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'movie_id', 'comment_txt', 'date')
+        fields = ('id', 'date')
 

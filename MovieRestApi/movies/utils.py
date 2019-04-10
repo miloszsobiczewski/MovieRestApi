@@ -1,6 +1,8 @@
+import os
 import datetime
 import requests as r
 import json
+from MovieRestApi.settings import BASE_DIR
 
 
 def get_date(str_date):
@@ -22,7 +24,7 @@ def get_omdb_data(movie_title):
     :return:
     """
     # read config data
-    with open("movies/config.JSON") as config_file:
+    with open(os.path.join(BASE_DIR, "movies/config.JSON")) as config_file:
         conf = json.load(config_file)
 
     # check for movie in OMDb API

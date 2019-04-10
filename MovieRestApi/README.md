@@ -9,7 +9,7 @@ first
 * based on the title movie details are fetched from OMDb API 
 (http://www.omdbapi.com/) - movie title is also check for existence there (
 if it is not there, will not be added)
-* POST request response include __omdb_detailse__ fetched from the external API 
+* POST request response include __omdb_details__ fetched from the external API 
 
 ### GET
 
@@ -43,7 +43,8 @@ comments added to the movie in the specified data range. Response include
 ID of the movie, position in rank and total number of comments 
 (in the specified date range). 
 * Movies with the same number of comments have the same position in the ranking.
-* require specific data range for which statistic is calculated
+* require specific data range for which statistic is calculated in format
+__dd.mm.yyyy__
 
 Example
 ```buildoutcfg
