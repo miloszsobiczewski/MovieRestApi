@@ -61,7 +61,7 @@ class MovieRestApiUnitTests(unittest.TestCase):
         self.assertEqual(post['movie_title'], get['movie_title'])
 
         # DELETE movie
-        response = r.delete(url, data={"id": movie_id})
+        r.delete(url, data={"id": movie_id})
 
     def test_004_post_comment(self):
         """

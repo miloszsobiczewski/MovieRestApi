@@ -49,6 +49,7 @@ class TopView(viewsets.ModelViewSet):
     def list(self, request):
         try:
             date_from = get_date(request.GET['date_from'])
+            date_from -= datetime.timedelta(days=1)
         except:
             date_from = datetime.date(1, 1, 1)
         try:
