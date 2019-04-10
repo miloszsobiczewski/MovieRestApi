@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from .models import Movie, Comment
 from .serializers import MovieSerializer, CommentSerializer, TopSerializer
 from rest_framework.response import Response
-from django.db.models import Count, Q
+from django.db import connection
 from .utils import get_date
 from ranking import Ranking, DENSE
 import datetime
@@ -56,10 +56,29 @@ class TopView(viewsets.ModelViewSet):
         except:
             date_to = datetime.date.today()
 
-        cmnt = Movie.objects.filter(
-            Q(comment__date__range=(date_from, date_to)) |
-            Q(comment__date__isnull=True)).values("id").annotate(
-            total_comments=Count("comment")).order_by('-total_comments')
+        # cmnt = Movie.objects.filter(
+        #     Q(comment__date__range=(date_from, date_to)) |
+        #     Q(comment__date__isnull=True)).values("id").annotate(
+        #     total_comments=Count("comment")).order_by('-total_comments')
+
+        # SQL STMT that can do all above and adds 0 for movies with no comments
+        # but much easier
+        sql_qry = \
+            'SELECT "movies_movie"."id", ' \
+            'SUM(CASE WHEN "movies_comment"."date" ' \
+                'BETWEEN datetime("%s") AND datetime("%s") ' \
+                'THEN 1 ELSE 0 end) as "total_comments" ' \
+            'FROM "movies_movie" LEFT OUTER JOIN "movies_comment" ' \
+            'ON ("movies_movie"."id" = "movies_comment"."movie_id_id") ' \
+            'GROUP BY "movies_movie"."id" ' \
+            'ORDER BY "total_comments" DESC' % (date_from, date_to)
+
+        with connection.cursor() as c:
+            c.execute(sql_qry)
+
+            "Return all rows from a cursor as a dict"
+            columns = [col[0] for col in c.description]
+            cmnt = [dict(zip(columns, row)) for row in c.fetchall()]
 
         # add rank
         total_comments = [c['total_comments'] for c in cmnt]
@@ -68,5 +87,3 @@ class TopView(viewsets.ModelViewSet):
             cmnt[i]['rank'] = ranked_comments[i][0] + 1
 
         return Response(cmnt)
-
-
