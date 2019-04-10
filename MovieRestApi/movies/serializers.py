@@ -10,7 +10,7 @@ def validate_movie_existence(value):
 
     if data['Response'] == 'False':
         raise serializers.ValidationError(
-            "This movie doesn\'t exist in OMDb")
+            "This movie doesn\'t exist in OMDb.")
     return value
 
 
@@ -45,4 +45,3 @@ class TopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'movie_id', 'comment_txt', 'date')
-

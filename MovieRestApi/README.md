@@ -4,7 +4,7 @@
 
 ### POST:
 
-* User can add new movie giving __movie_title__ - title will be check for 
+* User can add new movie giving __movie_title__ - title will be check for DB 
 presence first.
 * Based on the title movie details are fetched from OMDb API 
 (http://www.omdbapi.com/) - movie title is also check for existence there (

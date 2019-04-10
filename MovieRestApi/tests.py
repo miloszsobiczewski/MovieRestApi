@@ -13,9 +13,11 @@ class MovieRestApiUnitTests(unittest.TestCase):
         self.incorrect_movie_title = 'Humbeleulagula'
         self.movies_url = 'http://0.0.0.0:8000/movies/'
         self.comments_url = 'http://0.0.0.0:8000/comments/'
+        self.top_url = 'http://0.0.0.0:8000/top/'
         self.correct_date = '1.4.2019'
         self.incorrect_date = '2019.4.1'
         self.test_comment = 'Test Comment'
+        self.movies_list = ['Predator', 'Predator 2', 'Predators', 'Alien']
 
     def test_001_get_date(self):
         """
@@ -93,32 +95,42 @@ class MovieRestApiUnitTests(unittest.TestCase):
         self.assertEqual(post['comment_txt'], get['comment_txt'])
 
         # DELETE movie, DELETE comment cascade
-        response = r.delete(movie_url, data={"id": movie_id})
+        r.delete(movie_url, data={"id": movie_id})
 
-    def test_004_get_top(self):
+    def test_005_get_top(self):
         """
         Post new movies and comments, Check if returned list is appropriate
         :return:
         """
-        movie_parameters = {"movie_title": self.correct_movie_title}
+        movies_id_list = []
 
         # POST movies
-        response = r.post(self.movies_url, data=movie_parameters)
-        post = response.json()
-
-        movie_id = post['id']
-        movie_url = self.movies_url + str(movie_id) + '/'
-
-        comment_parameters = {"movie_id": movie_id,
-                              "comment_txt": self.test_comment}
+        for m in self.movies_list:
+            response = r.post(self.movies_url, data={"movie_title": m})
+            movies_id_list.append(response.json()['id'])
 
         # POST comments
-        response = r.post(self.comments_url, data=comment_parameters)
-        post = response.json()
+        for c in range(4):
+            r.post(self.comments_url, data={"movie_id": movies_id_list[0],
+                                            "comment_txt": self.test_comment})
+        for c in range(2):
+            r.post(self.comments_url, data={"movie_id": movies_id_list[1],
+                                            "comment_txt": self.test_comment})
+            r.post(self.comments_url, data={"movie_id": movies_id_list[2],
+                                            "comment_txt": self.test_comment})
+        # GET top
+        response = r.get(self.top_url)
+        get = response.json()
+        ranks = [d.get('rank') for d in get]
+        total_comments = [d.get('total_comments') for d in get]
 
-        # DELETE movie, DELETE comment cascade
-        response = r.delete(movie_url, data={"id": movie_id})
+        self.assertEqual(ranks, [1, 2, 2, 3])
+        self.assertEqual(total_comments, [4, 2, 2, 0])
 
+        # DELETE movies, DELETE comments cascade
+        for i in movies_id_list:
+            movie_url = self.movies_url + str(i) + '/'
+            r.delete(movie_url, data={"id": i})
 
     @classmethod
     def tearDownClass(self):
