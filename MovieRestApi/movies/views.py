@@ -6,7 +6,6 @@ from django.db.models import Count, Q
 from .utils import get_date
 from ranking import Ranking, DENSE
 import datetime
-import pdb
 
 
 class MovieView(viewsets.ModelViewSet):
