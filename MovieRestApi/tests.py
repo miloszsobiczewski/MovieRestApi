@@ -1,6 +1,5 @@
 import unittest
 import movies.utils as ut
-import datetime
 import requests as r
 
 

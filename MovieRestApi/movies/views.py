@@ -46,15 +46,6 @@ class TopView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def list(self, request):
-        # try:
-        #     date_from = get_date(request.GET['date_from'])
-        #     date_from -= datetime.timedelta(days=1)
-        # except:
-        #     date_from = datetime.date(1, 1, 1)
-        # try:
-        #     date_to = get_date(request.GET['date_to'])
-        # except:
-        #     date_to = datetime.date.today()
         try:
             date_from = request.GET.get('date_from', '2.1.1410')
             date_from = datetime.datetime.strptime(date_from, '%d.%m.%Y')
