@@ -13,8 +13,7 @@ def get_date(str_date):
     """
     date = str_date.split('.')
     (day, mth, year) = [int(x) for x in date]
-    date = datetime.date(year, mth, day)
-    return date
+    return datetime.date(year, mth, day)
 
 
 def get_omdb_data(movie_title):
@@ -31,5 +30,4 @@ def get_omdb_data(movie_title):
     url = conf['api_url'] % (movie_title, conf['api_key'])
     # check response code
     response = r.get(url)
-    data = response.json()
-    return data
+    return response.json()

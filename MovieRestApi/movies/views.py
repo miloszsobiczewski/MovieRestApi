@@ -65,7 +65,7 @@ class TopView(viewsets.ModelViewSet):
         # SQL STMT that can do all above and adds 0 for movies with no comments
         # but much easier
         sql_qry = \
-            'SELECT "movies_movie"."id", ' \
+            'SELECT "movies_movie"."id" AS "movie_id", ' \
             'SUM(CASE WHEN "movies_comment"."date" ' \
                 'BETWEEN datetime("%s") AND datetime("%s") ' \
                 'THEN 1 ELSE 0 end) as "total_comments" ' \

@@ -36,7 +36,7 @@ class MovieRestApiUnitTests(unittest.TestCase):
         :return:
         """
         data = ut.get_omdb_data(self.correct_movie_title)
-        self.assertTrue(bool(data['Response'] == 'True'))
+        self.assertTrue(bool(data['Response'] == 'True')) ## TODO czy trzeba robic bool()???
 
         data = ut.get_omdb_data(self.incorrect_movie_title)
         self.assertFalse(bool(data['Response'] == 'True'))

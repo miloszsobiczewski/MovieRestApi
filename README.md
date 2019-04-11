@@ -1,5 +1,7 @@
 # MovieRestApi
 
+Available online at http://milosz.pythonanywhere.com
+
 ## /movies/ endpoint
 
 ### POST:
@@ -51,3 +53,31 @@ Example
 ```buildoutcfg
 /top/?date_from=8.4.2019&date_to=9.4.2019
 ```
+Passing above parameters will return all comments in the range 
+__[8.4.2019, 9.4.2019)__.
+
+## Third-party libraries
+
+### requests
+
+Used for unit testing POST and GET requests.
+
+### ranking
+
+Used for calculating a dense ranking for top movies.
+
+## Unit tests
+
+Tests for utils functions and all endpoints requests were written using _unittest_
+library. Tests invocation from django project main directory:
+
+```buildoutcfg
+python tests.py
+```
+Note: Start app at _0.0.0.0:8000_ before starting tests.
+
+## Hosting
+
+I chose www.pythonanywhere.com instead of www.heroku.com because I already
+had experience putting apps at this host. 
+
