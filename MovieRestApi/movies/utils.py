@@ -1,19 +1,7 @@
 import os
-import datetime
 import requests as r
 import json
 from MovieRestApi.settings import BASE_DIR
-
-
-def get_date(str_date):
-    """
-    Gets date from string format dd.mm.yyyy
-    :param str_date:
-    :return: datetime.date
-    """
-    date = str_date.split('.')
-    (day, mth, year) = [int(x) for x in date]
-    return datetime.date(year, mth, day)
 
 
 def get_omdb_data(movie_title):

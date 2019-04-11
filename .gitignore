@@ -1,3 +1,4 @@
 .idea
 __pycache__
 omdb-api.py
+db.sqlite3

@@ -14,20 +14,8 @@ class MovieRestApiUnitTests(unittest.TestCase):
         self.movies_url = 'http://0.0.0.0:8000/movies/'
         self.comments_url = 'http://0.0.0.0:8000/comments/'
         self.top_url = 'http://0.0.0.0:8000/top/'
-        self.correct_date = '1.4.2019'
-        self.incorrect_date = '2019.4.1'
         self.test_comment = 'Test Comment'
         self.movies_list = ['Predator', 'Predator 2', 'Predators', 'Alien']
-
-    def test_001_get_date(self):
-        """
-        Checks if function returns date and the date is in correct format:
-        'dd.mm.yyyy'
-        :return:
-        """
-        date = ut.get_date(self.correct_date)
-        self.assertTrue(isinstance(date, datetime.date))
-        self.assertGreaterEqual(date.year, 2019)
 
     def test_002_get_omdb_data(self):
         """

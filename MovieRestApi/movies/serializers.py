@@ -40,8 +40,3 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('id', 'movie_id', 'comment_txt', 'date')
 
-
-class TopSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('id', 'movie_id', 'comment_txt', 'date')

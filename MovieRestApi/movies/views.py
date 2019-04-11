@@ -1,9 +1,8 @@
 from rest_framework import viewsets
 from .models import Movie, Comment
-from .serializers import MovieSerializer, CommentSerializer, TopSerializer
+from .serializers import MovieSerializer, CommentSerializer
 from rest_framework.response import Response
 from django.db import connection
-from .utils import get_date
 from ranking import Ranking, DENSE
 import datetime
 
@@ -44,18 +43,31 @@ class CommentView(viewsets.ModelViewSet):
 
 class TopView(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
-    serializer_class = TopSerializer
+    serializer_class = CommentSerializer
 
     def list(self, request):
+        # try:
+        #     date_from = get_date(request.GET['date_from'])
+        #     date_from -= datetime.timedelta(days=1)
+        # except:
+        #     date_from = datetime.date(1, 1, 1)
+        # try:
+        #     date_to = get_date(request.GET['date_to'])
+        # except:
+        #     date_to = datetime.date.today()
         try:
-            date_from = get_date(request.GET['date_from'])
-            date_from -= datetime.timedelta(days=1)
-        except:
-            date_from = datetime.date(1, 1, 1)
+            date_from = request.GET.get('date_from', '2.1.1410')
+            date_from = datetime.datetime.strptime(date_from, '%d.%m.%Y')
+        except ValueError:
+            date_from = datetime.date(1410, 8, 15)
+
+        date_from -= datetime.timedelta(days=1)
+
         try:
-            date_to = get_date(request.GET['date_to'])
-        except:
-            date_to = datetime.date.today()
+            date_to = request.GET.get('date_to', '31.12.9999')
+            date_to = datetime.datetime.strptime(date_to, '%d.%m.%Y')
+        except ValueError:
+            date_from = datetime.date(9999, 12, 31)
 
         # cmnt = Movie.objects.filter(
         #     Q(comment__date__range=(date_from, date_to)) |
@@ -84,7 +96,7 @@ class TopView(viewsets.ModelViewSet):
         # add rank
         total_comments = [c['total_comments'] for c in cmnt]
         ranked_comments = list(Ranking(total_comments, strategy=DENSE))
-        for i in range(0, len(cmnt)):
+        for i in range(len(cmnt)):
             cmnt[i]['rank'] = ranked_comments[i][0] + 1
 
         return Response(cmnt)

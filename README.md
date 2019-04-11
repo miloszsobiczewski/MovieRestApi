@@ -47,7 +47,7 @@ ID of the movie, position in rank and total number of comments
 * Movies with the same number of comments have the same position in the ranking.
 * Require specific data range for which statistic is calculated in format 
 _dd.mm.yyyy_. In case no data range is selected following default range is
-applied _(1.1.2019, today)_.
+applied _(15.8.1410, 31.12.9999)_.
 
 Example
 ```buildoutcfg
@@ -68,8 +68,8 @@ Used for calculating a dense ranking for top movies.
 
 ## Unit tests
 
-Tests for utils functions and all endpoints requests were written using _unittest_
-library. Tests invocation from django project main directory:
+Tests for utils functions and all endpoints requests were written using 
+_unittest_ library. Tests invocation from django project main directory:
 
 ```buildoutcfg
 python tests.py
