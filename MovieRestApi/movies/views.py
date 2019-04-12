@@ -8,14 +8,12 @@ import datetime
 
 
 class MovieView(viewsets.ModelViewSet):
-    queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
     def create(self, request, *args, **kwargs):
 
         write_serializer = MovieSerializer(data=request.data)
         write_serializer.is_valid(raise_exception=True)
-        print(write_serializer.is_valid(raise_exception=True))
 
         self.perform_create(write_serializer)
 
@@ -24,6 +22,37 @@ class MovieView(viewsets.ModelViewSet):
         res.update(movie.values('omdb_details')[0])
 
         return Response(res)
+
+    def get_queryset(self):
+        """
+
+        """
+        queryset = Movie.objects.all()
+
+        # title filter
+        movie_title = self.request.query_params.get('movie_title', None)
+        if movie_title is not None:
+            queryset = queryset.filter(movie_title=movie_title)
+
+        # year filter
+        year = self.request.query_params.get('year', None)
+        if year is not None:
+            year_filter = 'Year\': \'%s' % year
+            pk_list = queryset.values_list('pk', flat=True).filter(
+                omdb_details__contains=year_filter)
+            queryset = queryset.filter(pk__in=pk_list)
+
+        # genre filter
+        genre = self.request.query_params.get('genre', None)
+        if genre is not None:
+            genre_regex = "Genre\'\:\ \'.*%s" % genre
+            pk_list = queryset.values_list('pk', flat=True).filter(
+                omdb_details__iregex=genre_regex)
+            queryset = queryset.filter(pk__in=pk_list)
+
+        # pdb.set_trace()
+
+        return queryset
 
 
 class CommentView(viewsets.ModelViewSet):

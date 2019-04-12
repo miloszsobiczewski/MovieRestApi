@@ -2,3 +2,4 @@
 __pycache__
 omdb-api.py
 db.sqlite3
+settings.py

@@ -4,7 +4,7 @@ from rest_framework import routers
 
 
 router = routers.DefaultRouter()
-router.register('movies', views.MovieView)
+router.register('movies', views.MovieView, basename='movies')
 router.register('comments', views.CommentView, basename='comments')
 router.register('top', views.TopView)
 

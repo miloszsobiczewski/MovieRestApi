@@ -15,9 +15,11 @@ def validate_movie_existence(value):
 
 
 class MovieSerializer(serializers.ModelSerializer):
+    omdb_details = serializers.CharField(read_only=True)
+
     class Meta:
         model = Movie
-        fields = ('id', 'movie_title')
+        fields = ('id', 'movie_title', 'omdb_details')
         validators = [
             validate_movie_existence
         ]
