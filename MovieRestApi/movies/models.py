@@ -4,6 +4,7 @@ from django.db import models
 class Movie(models.Model):
     movie_title = models.CharField(unique=True, max_length=100)
     omdb_details = models.TextField()
+    year = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.movie_title

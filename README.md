@@ -16,6 +16,16 @@ if it is not there, will not be added).
 ### GET
 
 * User can fetch all movies currently saved to DB.
+* It is possible to filter the results with following parameters:
+    * title,
+    * year,
+    * genre.
+
+  Sorting is available using below parameters:
+    * sort,
+    * desc_sort 
+    
+  giving __id__, __movie_title__ or __year__ as values.
 
 ## /comments/ endpoint
 

@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.db import connection
 from ranking import Ranking, DENSE
 import datetime
+import ast
 
 
 class MovieView(viewsets.ModelViewSet):
@@ -21,6 +22,11 @@ class MovieView(viewsets.ModelViewSet):
         movie = Movie.objects.all().filter(id=res['id'])
         res.update(movie.values('omdb_details')[0])
 
+        # get year from details and update object
+        omdb_details = ast.literal_eval(res['omdb_details'])
+        year = omdb_details['Year']
+        movie.update(year=year)
+
         return Response(res)
 
     def get_queryset(self):
@@ -30,7 +36,7 @@ class MovieView(viewsets.ModelViewSet):
         queryset = Movie.objects.all()
 
         # title filter
-        movie_title = self.request.query_params.get('movie_title', None)
+        movie_title = self.request.query_params.get('title', None)
         if movie_title is not None:
             queryset = queryset.filter(movie_title=movie_title)
 
@@ -50,7 +56,13 @@ class MovieView(viewsets.ModelViewSet):
                 omdb_details__iregex=genre_regex)
             queryset = queryset.filter(pk__in=pk_list)
 
-        # pdb.set_trace()
+        # sorting
+        sort = self.request.query_params.get('sort', None)
+        if sort is not None:
+            queryset = queryset.order_by(sort)
+        desc_sort = self.request.query_params.get('desc_sort', None)
+        if desc_sort is not None:
+            queryset = queryset.order_by('-%s' % desc_sort)
 
         return queryset
 
