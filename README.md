@@ -20,12 +20,17 @@ if it is not there, will not be added).
     * title,
     * year,
     * genre.
-
+    
   Sorting is available using below parameters:
     * sort,
     * desc_sort 
     
-  giving __id__, __movie_title__ or __year__ as values.
+  giving one of values: __id__, __movie_title__ or __year__.
+
+Example
+```buildoutcfg
+/movies/?genre=Adventure&sort=year
+```
 
 ## /comments/ endpoint
 
