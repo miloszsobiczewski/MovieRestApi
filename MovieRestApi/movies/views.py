@@ -4,8 +4,8 @@ from .serializers import MovieSerializer, CommentSerializer
 from rest_framework.response import Response
 from django.db import connection
 from ranking import Ranking, DENSE
+from ast import literal_eval
 import datetime
-import ast
 
 
 class MovieView(viewsets.ModelViewSet):
@@ -23,7 +23,7 @@ class MovieView(viewsets.ModelViewSet):
         res.update(movie.values('omdb_details')[0])
 
         # get year from details and update object
-        omdb_details = ast.literal_eval(res['omdb_details'])
+        omdb_details = literal_eval(res['omdb_details'])
         year = omdb_details['Year']
         movie.update(year=year)
 
@@ -31,7 +31,7 @@ class MovieView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-
+        Enables filtering and sorting
         """
         queryset = Movie.objects.all()
 
@@ -99,7 +99,7 @@ class TopView(viewsets.ModelViewSet):
             date_to = request.GET.get('date_to', '31.12.9999')
             date_to = datetime.datetime.strptime(date_to, '%d.%m.%Y')
         except ValueError:
-            date_from = datetime.date(9999, 12, 31)
+            date_to = datetime.date(9999, 12, 31)
 
         # cmnt = Movie.objects.filter(
         #     Q(comment__date__range=(date_from, date_to)) |
